@@ -6,6 +6,8 @@ This plugin adds an icon to the toolbar. When clicked, it creates a link to the 
 
 Also adds a link back to the current note.
 
+This plugin is experimental and comes with absolutely no warranty of any kind. Use at your own risk.
+
 ## Joplin Plugin
 
 The main two files you will want to look at are:
