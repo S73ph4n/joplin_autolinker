@@ -48,6 +48,6 @@ joplin.plugins.register({
 			},
 		});
 		
-		joplin.views.toolbarButtons.create('linkMaker', ToolbarButtonLocation.EditorToolbar);
+		joplin.views.toolbarButtons.create('linkMaker', 'linkMaker', ToolbarButtonLocation.EditorToolbar);
 	},
 });
