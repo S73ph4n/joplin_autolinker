@@ -1,8 +1,22 @@
 import joplin from 'api';
-import { ToolbarButtonLocation } from 'api/types';
+import { SettingItemType, ToolbarButtonLocation } from 'api/types';
 
 joplin.plugins.register({
 	onStart: async function() {
+		await joplin.settings.registerSection('autolinker', {
+			label: 'Autolinker',
+			iconName: 'fas fa-external-link-alt',
+		});
+		
+		await joplin.settings.registerSettings({
+			'backlinkText': {
+				value: 'Linked from',
+				type: SettingItemType.String,
+				section: 'autolinker',
+				public: true,
+				label: 'Backlink text (leave blank for no backlink)',
+			},
+		});
 		joplin.commands.register({
 			name: 'linkMaker',
 			label: 'Link to corresponding note. Creates it if needed.',
@@ -36,9 +50,16 @@ joplin.plugins.register({
 					//console.info(idLinkedNote);
 					
 					//Insert backlink :
-					const backlink = 'Linked from [' + currentNote.title + '](:/' + currentNote.id + ')';
+					const backlinkText = await joplin.settings.value('backlinkText');
 					const bodyLinkedNote = (await joplin.data.get(['notes', idLinkedNote.toString()], { fields: ['body'] })).body;
-					const newBodyLinkedNote = bodyLinkedNote + "\n" + backlink;
+					let backlink;
+					let newBodyLinkedNote;
+					if (backlinkText !== ""){
+						backlink = backlinkText + ' [' + currentNote.title + '](:/' + currentNote.id + ')';
+						newBodyLinkedNote = bodyLinkedNote + "\n" + backlink;
+					}else{
+						newBodyLinkedNote = bodyLinkedNote;
+					}
 					await joplin.data.put(['notes', idLinkedNote.toString()], null, { body: newBodyLinkedNote });
 
 					const linkToNewNote = '[' + selectedText + '](:/' + idLinkedNote + ')';
